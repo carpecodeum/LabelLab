@@ -9,8 +9,8 @@ a many to many relationship between images and labels
 """
 
 labels = db.Table('labels',
-    db.Column('label_id', db.Integer, db.ForeignKey('label.id'), primary_key=True),
-    db.Column('image_id', db.Integer, db.ForeignKey('image.id'), primary_key=True)
+    db.Column('label_id', db.Integer, db.ForeignKey('label.id', ondelete="cascade", onupdate="cascade"), primary_key=True),
+    db.Column('image_id', db.Integer, db.ForeignKey('image.id', ondelete="cascade", onupdate="cascade"), primary_key=True)
 )
 
 class Image(db.Model):
@@ -27,16 +27,17 @@ class Image(db.Model):
     labelled = db.Column(db.Boolean,
                       default = False)
     project_id = db.Column(db.Integer, 
-                        db.ForeignKey('project.id'),
+                        db.ForeignKey('project.id', ondelete="cascade", onupdate="cascade"),
                         nullable=False)
     labelsdata = db.relationship('LabelData', 
                                  backref='image',
                                  lazy=True,
-                                 cascade="all, delete-orphan")
+                                 cascade="all, save-update, delete",
+                                 passive_deletes=True)
     labels = db.relationship('Label',
                               secondary=labels, 
                               lazy='subquery',
-                              backref=db.backref('image', lazy=True))
+                              backref=db.backref('image', lazy=True, cascade="all, save-update, delete", passive_deletes=True))
     
     def __init__(self, imagename, image_url, height, width, labelled, project_id):
         """

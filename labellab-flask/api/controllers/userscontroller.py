@@ -8,14 +8,14 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_raw_jwt,
 )
-from api.models.User import User
+from ..models.User import User
 
 
 class Register(MethodView):
     """This class registers a new user."""
 
     def post(self):
-        """Handle POST request for this view. Url --> /api/users/register"""
+        """Handle POST request for this view. Url --> /api/v1/auth/register"""
         # getting JSON data from request
         post_data = request.get_json(silent=True,force=True)
 
@@ -79,10 +79,9 @@ class Login(MethodView):
     """This class-based view handles user login and access token generation."""
 
     def post(self):
-        """Handle POST request for this view. Url ---> /api/users/login"""
+        """Handle POST request for this view. Url ---> /api/v1/auth/login/"""
         data = request.get_json(silent=True,
                                 force=True)
-
         try:
             email = data["email"]
             password = data["password"]

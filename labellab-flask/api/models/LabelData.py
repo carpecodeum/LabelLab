@@ -14,10 +14,10 @@ class LabelData(db.Model):
     latitude = db.Column(db.Integer)
     longitude = db.Column(db.Integer)
     image_id = db.Column(db.Integer, 
-                      db.ForeignKey('image.id'),
+                      db.ForeignKey('image.id', ondelete="cascade", onupdate="cascade"),
                       nullable=False)
     label_id = db.Column(db.Integer, 
-                      db.ForeignKey('label.id'),
+                      db.ForeignKey('label.id', ondelete="cascade", onupdate="cascade"),
                       nullable=False)
     
     def __init__(self, image_id, label_id):

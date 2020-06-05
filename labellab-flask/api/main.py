@@ -3,12 +3,16 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
+from flask_marshmallow import Marshmallow
+
 
 from api.config import config
-from api.routes import users
-from api.extensions import db, migrate, jwt
+from api.routes import users, projects
+from api.extensions import db, migrate, jwt, ma
 from api.models import User, Image, Label, LabelData, ProjectMembers, Projects, Team, RevokedToken
-
+from api.serializers.users import UserSchema
+from api.serializers.project import ProjectSchema
+from api.serializers.projectmember import ProjectMemberSchema
 
 def create_app(config_name):
     try:
@@ -35,10 +39,13 @@ def register_additional_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    ma.init_app(app)
+
 
 def register_blueprint(app):
     """Register Flask blueprints."""
     app.register_blueprint(users.usersprint, url_prefix="/api/v1")
+    app.register_blueprint(projects.projectsprint, url_prefix="/api/v1")
     return None
 
 def register_shellcontext(app):
