@@ -8,11 +8,6 @@ This table is an association table for
 a many to many relationship between images and labels
 """
 
-labels = db.Table('labels',
-    db.Column('label_id', db.Integer, db.ForeignKey('label.id', ondelete="cascade", onupdate="cascade"), primary_key=True),
-    db.Column('image_id', db.Integer, db.ForeignKey('image.id', ondelete="cascade", onupdate="cascade"), primary_key=True)
-)
-
 class Image(db.Model):
     """
     This model holds information about an image in a project
@@ -34,10 +29,6 @@ class Image(db.Model):
                                  lazy=True,
                                  cascade="all, save-update, delete",
                                  passive_deletes=True)
-    labels = db.relationship('Label',
-                              secondary=labels, 
-                              lazy='subquery',
-                              backref=db.backref('image', lazy=True, cascade="all, save-update, delete", passive_deletes=True))
     
     def __init__(self, imagename, image_url, height, width, labelled, project_id):
         """

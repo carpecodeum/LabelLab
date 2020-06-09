@@ -1,11 +1,13 @@
-from api.extensions import db, Base, ma
-from api.models.Projects import Project
+from marshmallow import Schema, fields
 
-class ProjectSchema(ma.Schema):
-    
-    class Meta:
-        model = Project
-        fields = ("id", 
-                  "projectname", 
-                  "projectdescription",
-                  "admin_id")
+from api.extensions import db, ma
+
+class ProjectSchema(ma.ModelSchema):
+    """
+    Serializer class for project
+    """
+        
+    id = fields.Int(dump_only=True) 
+    projectname = fields.Str()
+    projectdescription = fields.Str()
+    admin_id = fields.Int(dump_only=True)

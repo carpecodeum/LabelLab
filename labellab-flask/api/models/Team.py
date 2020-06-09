@@ -30,11 +30,11 @@ class Team(db.Model):
         self.role = role
         self.project_id = project_id
 
-    def __repr__(self):
-        """
-        Returns the object reprensentation
-        """
-        return "<Team %r>" % self.teamname
+    # def __repr__(self):
+    #     """
+    #     Returns the object reprensentation
+    #     """
+    #     return "<Team %r>" % self.teamname
     def to_json(self):
         """
         Returns a JSON object
@@ -61,11 +61,10 @@ class Team(db.Model):
         Save a team to the database.
         This includes creating a new user and editing one.
         """
-        try:
-            db.session.add(self)
-            db.session.commit()
-            to_json(self)
-        except Exception as err:
-            print("Error occured: ", err)
-            response = {"message": "Something went wrong!!"}
-            return jsonify(response)
+        db.session.add(self)
+        db.session.commit()
+        team_json = {"teamId": self.id, 
+                     "teamName": self.teamname,
+                     "role": self.role}
+        return team_json
+        

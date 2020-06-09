@@ -9,10 +9,7 @@ from flask_marshmallow import Marshmallow
 from api.config import config
 from api.routes import users, projects
 from api.extensions import db, migrate, jwt, ma
-from api.models import User, Image, Label, LabelData, ProjectMembers, Projects, Team, RevokedToken
-from api.serializers.users import UserSchema
-from api.serializers.project import ProjectSchema
-from api.serializers.projectmember import ProjectMemberSchema
+from api.models import User, Image, Label, LabelData, ProjectMembers, Projects, Team, RevokedToken, Point
 
 def create_app(config_name):
     try:

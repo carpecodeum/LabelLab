@@ -8,10 +8,10 @@ class ProjectMember(db.Model):
     This model holds information about a projectmember registered
     """
     __tablename__ = "projectmember"
-
+    
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
-                     db.ForeignKey('user.id', ondelete="cascade", onupdate="cascade"), 
-                     primary_key=True,
+                     db.ForeignKey('user.id', ondelete="cascade", onupdate="cascade"),
                      nullable=False)
     team_id = db.Column(db.Integer,
                      db.ForeignKey('team.id', ondelete="cascade", onupdate="cascade"), 
@@ -22,14 +22,13 @@ class ProjectMember(db.Model):
         Initializes the projectMember instance
         """
         self.user_id = user_id
-        self.project_id= project_id
         self.team_id = team_id
 
-    def __repr__(self):
-        """
-        Returns the object reprensentation
-        """
-        return "<ProjectMember %r>" % self.user_id
+    # def __repr__(self):
+    #     """
+    #     Returns the object reprensentation
+    #     """
+    #     return "<ProjectMember %r>" % self.user_id
     
     def to_json(self):
         """
@@ -57,11 +56,8 @@ class ProjectMember(db.Model):
         Save a team to the database.
         This includes creating a new user and editing one.
         """
-        try:
-            db.session.add(self)
-            db.session.commit()
-            to_json(self)
-        except Exception as err:
-            print("Error occured: ", err)
-            response = {"message": "Something went wrong!!"}
-            return jsonify(response)
+        db.session.add(self)
+        db.session.commit()
+        projectmember_json = {"projectMemberId": self.user_id, 
+                              "teamId": self.team_id}
+        return projectmember_json

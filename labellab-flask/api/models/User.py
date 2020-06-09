@@ -41,11 +41,11 @@ class User(db.Model):
         if password:
             self.password = User.generate_password_hash(password)
 
-    def __repr__(self):
-        """
-        Returns the object reprensentation of user
-        """
-        return "<User %r>" % self.name
+    # def __repr__(self):
+    #     """
+    #     Returns the object reprensentation of user
+    #     """
+    #     return "<User %r>" % self.name
 
     @staticmethod
     def generate_password_hash(password):
@@ -64,5 +64,3 @@ class User(db.Model):
         Verify the password
         """
         return Bcrypt().check_password_hash(self.password, password)
-
-        
