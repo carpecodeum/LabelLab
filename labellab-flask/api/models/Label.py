@@ -15,12 +15,13 @@ class Label(db.Model):
     count = db.Column(db.Integer,
                    default = 0)
     project_id = db.Column(db.Integer, 
-                        db.ForeignKey('project.id'),
+                        db.ForeignKey('project.id', ondelete="cascade", onupdate="cascade"),
                         nullable=False)
     labelsdata = db.relationship('LabelData', 
                                  backref='label',
                                  lazy=True,
-                                 cascade="all, delete-orphan")
+                                 cascade="all, save-update, delete",
+                                 passive_deletes=True)
     
     def __init__(self, labelname, label_type, count, project_id):
         """

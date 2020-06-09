@@ -1,7 +1,9 @@
+from flask import jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.ext.declarative import declarative_base
 from flask_jwt_extended import JWTManager
+from flask_marshmallow import Marshmallow
 
 """
 Extensions for the app context. 
@@ -11,8 +13,9 @@ db = SQLAlchemy()
 migrate = Migrate()
 Base = declarative_base()
 jwt = JWTManager()
+ma = Marshmallow()
 
-from api.models import RevokedToken
+from api.models.RevokedToken import RevokedToken
 
 # This method will check if a token is blacklisted i.e. token is expired or revoked,
 # and will be called automatically when blacklist is enabled.
