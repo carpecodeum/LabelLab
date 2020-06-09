@@ -2,11 +2,6 @@ from datetime import datetime
 from flask import current_app, jsonify
 
 from api.extensions import db, Base
-from api.models.Team import Team
-from api.models.User import User
-
-ADMIN_TEAMNAME = "admin"
-ADMIN_ROLE = "admin"
 
 class Project(db.Model):
     """
@@ -40,8 +35,8 @@ class Project(db.Model):
         self.projectdescription = projectdescription
         self.admin_id = admin_id
 
-    # def __repr__(self):
-    #     """
-    #     Returns the object reprensentation
-    #     """
-    #     return "<Project(projectName='%s', projectId='%s', projectDescription='%s')>" % (self.projectname, self.id, self.projectdescription)
+    def __repr__(self):
+        """
+        Returns the object reprensentation
+        """
+        return "<Project(projectName='%s', projectId='%s', projectDescription='%s')>" % (self.projectname, self.id, self.projectdescription)
