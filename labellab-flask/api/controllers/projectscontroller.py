@@ -169,10 +169,12 @@ class ProjectInfo(MethodView):
             
             project = find_by_project_id(project_id)
             response = {
-                "success": False,
-                "msg": "Project not found",
+                "success": True,
+                "msg": "Project found",
                 "body": project
             }
+            return make_response(jsonify(response)), 200
+        
         except Exception:
             response = {
                 "success":False,
@@ -197,6 +199,8 @@ class ProjectInfo(MethodView):
                 "success": True,
                 "msg": "Project deleted."
             }
+            return make_response(jsonify(response)), 200
+        
         except Exception:
             response = {
                 "success":False,
@@ -239,7 +243,7 @@ class ProjectInfo(MethodView):
                     "success": True,
                     "msg": "Project updated.",
                     "body": project_new}
-            return make_response(jsonify(response)), 404
+            return make_response(jsonify(response)), 201
 
         except Exception as err:
             print("Error occurred: ", err)
@@ -389,6 +393,12 @@ class RemoveProjectMember(MethodView):
                     project_members = count_users_in_team(id)
                     if project_members==0:
                         delete_team(id)
+                        
+                response = {
+                        "success": True,
+                        "msg": "ProjectMember deleted."
+                        }
+                return make_response(jsonify(response)), 200
 
             except Exception:
                 response = {
