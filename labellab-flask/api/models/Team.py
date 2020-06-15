@@ -34,5 +34,4 @@ class Team(db.Model):
         """
         Returns the object reprensentation
         """
-        return "<Team %r>" % self.teamname
-        
+        return "<Team %r>" % self.team_name
