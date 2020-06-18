@@ -70,7 +70,7 @@ class GetAllTeams(MethodView):
 class TeamInfo(MethodView):
     """This class handles deletion, updating and fetching a team."""
     @jwt_required
-    def get(self, team_id):
+    def get(self, project_id, team_id):
         """Handle GET request for this view. Url --> /api/v1/team/team_info/<int:project_id>/<int:team_id>"""
         try:
             if not team_id:
@@ -101,7 +101,7 @@ class TeamInfo(MethodView):
             return make_response(jsonify(response)), 404
     
     @jwt_required
-    def delete(self, team_id):
+    def delete(self, project_id, team_id):
         """Handle DELETE request for this view. Url --> /api/v1/team/team_info/<int:project_id>/<int:team_id>"""
         current_user = get_jwt_identity
         roles = get_user_roles(current_user, project_id)
@@ -128,7 +128,7 @@ class TeamInfo(MethodView):
             return make_response(jsonify(response)), 200
     
     @jwt_required
-    def put(self, team_id):
+    def put(self, project_id, team_id):
         """Handle PUT request for this view. Url --> /api/v1/team/team_info/<int:project_id>/<int:team_id>"""
         # getting JSON data from request
         post_data = request.get_json(silent=True,
@@ -166,8 +166,8 @@ class TeamInfo(MethodView):
                     "msg": "Team not present."}
                 return make_response(jsonify(response)), 404
             
-            team.teamname = team_name
-            team.role = role
+            team['teamname'] = team_name
+            team['role'] = role
             
             team_new = save_team(team)
             response = {
@@ -189,7 +189,7 @@ class AddTeamMember(MethodView):
     This method adds a member to the team.
     """
     @jwt_required
-    def post(self, project_id):
+    def post(self, project_id, team_id):
         """
         Handle POST request for this view.
         Url --> /api/v1/team/add_team_member/<int:project_id>/<int:team_id>
@@ -228,8 +228,8 @@ class AddTeamMember(MethodView):
                 }
                 return make_response(jsonify(response)), 404
             
-            project_member = save_projectmember(user.id, team.id)
-            team_new = find_by_id(project_member.team_id)
+            project_member = save_projectmember(user['id'], team['id'])
+            team_new = find_by_id(project_member['team_id'])
             
             res = {
                 "project_member": project_member,
@@ -254,7 +254,7 @@ class RemoveTeamMember(MethodView):
     This method removes a member from a team.
     """
     @jwt_required
-    def post(self, project_id):
+    def post(self, project_id, team_id):
         """
         Handle POST request for this view.
         Url --> /api/v1/team/remove_team_member/<int:project_id>/<int:team_id>
@@ -284,7 +284,7 @@ class RemoveTeamMember(MethodView):
                 }
                 return make_response(jsonify(response)), 404
             try:
-                delete_by_user_id_team_id(user.id, team_id)
+                delete_by_user_id_team_id(user['id'], team_id)
                 project_members = count_users_in_team(team_id)
                 if project_members==0:
                     delete_team(team_id)
