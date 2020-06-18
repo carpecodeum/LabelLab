@@ -16,7 +16,8 @@ from api.helpers.user import (
 from api.helpers.team import (
     save as save_team, 
     find_by_id,
-    delete_by_id as delete_team
+    delete_by_id as delete_team,
+    update_team
 )
 from api.helpers.projectmember import (
     save as save_projectmember, 
@@ -149,7 +150,8 @@ class TeamInfo(MethodView):
         except Exception:
             response = {
                 "success": False,
-                "msg": "Please provide all the required fields."}
+                "msg": "Please provide all the required fields."
+            }
             return make_response(jsonify(response)), 404
         
         try:
@@ -159,17 +161,22 @@ class TeamInfo(MethodView):
                     "msg": "Provide all the required data."
                 }
                 return make_response(jsonify(response)), 500
+
             team = find_by_id(team_id)
+
             if not team:
                 response = {
                     "success": False,
                     "msg": "Team not present."}
                 return make_response(jsonify(response)), 404
             
-            team['teamname'] = team_name
-            team['role'] = role
-            
-            team_new = save_team(team)
+            data = {
+                "teamname": team_name,
+                "role": role
+            }
+
+            team_new = update_team(team_id, data)
+
             response = {
                 "success": True,
                 "msg": "Team updated!!",
