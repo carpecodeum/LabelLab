@@ -171,7 +171,7 @@ class TeamInfo(MethodView):
                 return make_response(jsonify(response)), 404
             
             data = {
-                "teamname": team_name,
+                "team_name": team_name,
                 "role": role
             }
 
