@@ -31,13 +31,12 @@ class Label(db.Model):
                              secondary=model_has_label, 
                              backref=db.backref("labels", lazy="dynamic"))
     
-    def __init__(self, label_name, label_type, count, project_id):
+    def __init__(self, label_name, label_type, project_id):
         """
         Initializes the label instance
         """
         self.label_name = label_name
         self.label_type = label_type
-        self.count = count
         self.project_id = project_id
 
     def __repr__(self):
@@ -45,8 +44,3 @@ class Label(db.Model):
         Returns the object reprensentation
         """
         return "<Label %r>" % self.label_name
-    
-    @classmethod
-    def find_by_id_in_project(cls, _id, project_id):
-        result = cls.query.filter_by(id=_id, project_id=project_id).first()
-        return result
