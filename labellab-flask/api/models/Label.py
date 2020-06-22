@@ -15,7 +15,7 @@ class Label(db.Model):
     __tablename__ = "label"
 
     id = db.Column(db.Integer, primary_key=True)
-    labelname = db.Column(db.String(128), nullable=False,)
+    label_name = db.Column(db.String(128), nullable=False,)
     label_type = db.Column(db.String(80), nullable=False,)
     count = db.Column(db.Integer,
                    default = 0)
@@ -31,11 +31,11 @@ class Label(db.Model):
                              secondary=model_has_label, 
                              backref=db.backref("labels", lazy="dynamic"))
     
-    def __init__(self, labelname, label_type, count, project_id):
+    def __init__(self, label_name, label_type, count, project_id):
         """
         Initializes the label instance
         """
-        self.labelname = labelname
+        self.label_name = label_name
         self.label_type = label_type
         self.count = count
         self.project_id = project_id
@@ -44,7 +44,7 @@ class Label(db.Model):
         """
         Returns the object reprensentation
         """
-        return "<Label %r>" % self.labelname
+        return "<Label %r>" % self.label_name
     
     @classmethod
     def find_by_id_in_project(cls, _id, project_id):
