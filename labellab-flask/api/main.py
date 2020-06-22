@@ -6,7 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 
 from api.config import config
-from api.routes import users, projects, models, images
+from api.routes import users, models, images
 from api.extensions import db, migrate, jwt, ma
 from api.models import User, Image, Label, LabelData, ProjectMembers, Projects, Team, RevokedToken, Point, MLModel
 

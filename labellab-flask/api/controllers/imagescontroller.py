@@ -33,7 +33,7 @@ class SubmitImage(MethodView):
         current_user = get_jwt_identity()
         try:
             images = post_data["images"]
-            image_names = post_data["imageNames"]
+            image_names = post_data["image_names"]
             format = post_data["format"]
             project_id = project_id
             user_id = current_user
@@ -81,7 +81,7 @@ class SubmitImage(MethodView):
                 "success": False,
                 "msg": "Could not save images to the server."
             }
-            return make_response(jsonify(response)), 401
+            return make_response(jsonify(response)), 500
 
 
 class GetAllImages(MethodView):
