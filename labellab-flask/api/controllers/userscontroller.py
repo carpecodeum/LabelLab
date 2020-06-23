@@ -132,7 +132,7 @@ class Login(MethodView):
             "msg": "You logged in successfully.",
             "access_token": access_token,
             "refresh_token": refresh_token,
-            "user_details": to_json(user),
+            "body": to_json(user),
         }
         return make_response(jsonify(response)), 200
 
@@ -258,7 +258,7 @@ class TokenRefresh(MethodView):
             "message": "Token refreshed successfully",
             "access_token": access_token,
         }
-        return make_response(jsonify(response)), 200
+        return make_response(jsonify(response)), 201
 
 
 userController = {
