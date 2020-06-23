@@ -4,7 +4,6 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_REQUEST,
   LOGOUT_SUCCESS,
-  TOKEN_TYPE,
   SEND_EMAIL_REQUEST,
   SENT_EMAIL_SUCCESS,
   EMAIL_SENT_FAILURE,
@@ -17,7 +16,7 @@ import {
 } from '../constants/index'
 
 import FetchApi from '../utils/FetchAPI'
-import { setToken, removeToken} from '../utils/token'
+import { setAuthToken, saveAllTokens, removeAllTokens } from '../utils/token'
 
 export const login = (username, password, callback) => {
   return dispatch => {
@@ -26,11 +25,16 @@ export const login = (username, password, callback) => {
       password: password
     }
     dispatch(request())
-    FetchApi('POST', '/api/v1/auth/login', data)
+    FetchApi.post('/api/v1/auth/login', data)
       .then(res => {
-        if (res.data && res.data.token) {
-          setToken(TOKEN_TYPE, res.data.token)
-          dispatch(success(res.data.token))
+        console.log(res)
+        if (res.data && res.data.access_token && res.data.refresh_token) {
+          const { access_token, refresh_token, body } = res.data
+          // Set token to Auth header
+          setAuthToken(access_token)
+          //Save to localstorage
+          saveAllTokens({ access_token, refresh_token, body })
+          dispatch(success(body))
           callback()
         }
       })
@@ -56,15 +60,29 @@ export const login = (username, password, callback) => {
 export const logout = callback => {
   return dispatch => {
     dispatch(request())
-    removeToken(TOKEN_TYPE)
-    dispatch(success())
-    callback()
+    FetchApi.post('/api/v1/auth/logout_access', {})
+    .then(() => {
+      FetchApi.post('/api/v1/auth/logout_refresh', {})
+        .then(() => {
+          // Remove tokens from local storage
+          setAuthToken(false)
+         removeAllTokens()
+         dispatch(success())
+         callback()
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    })
+    .catch(err => {
+      console.error(err)
+    })
   }
 
   function request() {
     return { type: LOGOUT_REQUEST }
   }
-  function success(data) {
+  function success() {
     return { type: LOGOUT_SUCCESS }
   }
 }
