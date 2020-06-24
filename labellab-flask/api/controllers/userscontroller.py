@@ -55,14 +55,14 @@ class Register(MethodView):
             # Return a message to the user telling them that the username already
             # exist
             response = {"message": "UserName already exists. Please choose a different one."}
-            return make_response(jsonify(response)), 401
+            return make_response(jsonify(response)), 402
 
         # There is no user so we'll try to register them
 
         # If passwords don't match, return error
         if password != password2:
             response = {"message": "Both passwords does not match"}
-            return make_response(jsonify(response)), 401
+            return make_response(jsonify(response)), 402
         
         """Save the new User."""
         try:
@@ -106,7 +106,7 @@ class Login(MethodView):
         if not user:
             # User does not exist. Therefore, we return an error message
             response = {"message": "Invalid email, Please try again"}
-            return make_response(jsonify(response)), 401
+            return make_response(jsonify(response)), 402
 
         # Try to authenticate the found user using their password
         if not user.verify_password(password):
@@ -187,6 +187,65 @@ class TokenRefresh(MethodView):
         }
         return make_response(jsonify(response)), 201
 
+class UserInfo(MethodView):
+    """This class-based view handles retrieving the current \
+    user's information"""
+
+    @jwt_required
+    def get(self):
+        current_user = get_jwt_identity()
+
+        user = find_by_user_id(current_user)
+
+        if user is None:
+            response = {
+                "success": False,
+                "msg": "User not found."
+            }
+            return make_response(jsonify(response)), 404
+
+        response = {
+            "success": True,
+            "msg": "User found.",
+            "body": user
+        }
+        return make_response(jsonify(response)), 200
+
+class CountInfo(MethodView):
+    """This class-based view handles the count of images and labels."""
+
+    @jwt_required
+    def get(self):
+        current_user = get_jwt_identity()
+
+        user = get_data(current_user)
+
+        if user is None:
+            response = {
+                "success": False,
+                "msg": "User not found."
+            }
+            return make_response(jsonify(response)), 404
+        
+        projects = user["all_projects"]
+        total_projects = len(user["all_projects"])
+        total_images = 0
+        total_labels = 0
+        for i in range(total_projects):
+            total_images += len(projects[i]["images"])
+            total_labels += len(projects[i]["labels"])
+
+        data = {
+            "total_projects": total_projects,
+            "total_images": total_images,
+            "total_labels": total_labels
+        }
+        response = {
+            "success": True,
+            "msg": "Counts fetched.",
+            "body": data
+        }
+        return make_response(jsonify(response)), 200
 
 userController = {
     "register": Register.as_view("register"),
@@ -194,4 +253,6 @@ userController = {
     "logout_access": LogoutAccess.as_view("logout_access"),
     "logout_refresh": LogoutRefresh.as_view("logout_refresh"),
     "token_refresh": TokenRefresh.as_view("token_refresh"),
+    "user": UserInfo.as_view("user"),
+    "count_info": CountInfo.as_view("count_info")
 }
