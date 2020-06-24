@@ -318,6 +318,30 @@ class UserInfo(MethodView):
         }
         return make_response(jsonify(response)), 200
 
+class UserInfo(MethodView):
+    """This class-based view handles retrieving the current \
+    user's information"""
+
+    @jwt_required
+    def get(self):
+        current_user = get_jwt_identity()
+
+        user = find_by_user_id(current_user)
+
+        if user is None:
+            response = {
+                "success": False,
+                "msg": "User not found."
+            }
+            return make_response(jsonify(response)), 404
+
+        response = {
+            "success": True,
+            "msg": "User found.",
+            "body": user
+        }
+        return make_response(jsonify(response)), 200
+
 class CountInfo(MethodView):
     """This class-based view handles the count of images and labels."""
 
