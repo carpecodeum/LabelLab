@@ -33,36 +33,48 @@ class Register(MethodView):
             email = post_data["email"]
             password = post_data["password"]
             password2 = post_data["password2"]
-        except Exception:
-            response = {"message": "Please provide all the required fields."}
-            return make_response(jsonify(response)), 404
+        except KeyError as err:
+            response = {
+                "success": False,
+                "msg": f'{str(err)} key is not present'
+            }
+            return make_response(jsonify(response)), 400
 
         # Querying the database with requested email
         user = find_by_email(email)
 
         if user:
             # There is an existing user. We don't want to register users twice
-            # Return a message to the user telling them that they they already
+            # Return a msg to the user telling them that they they already
             # exist
-            response = {"message": "Email already exists. Please login."}
-            return make_response(jsonify(response)), 401
+            response = {
+                "success": False,
+                "msg": "Email already exists. Please login."
+            }
+            return make_response(jsonify(response)), 400
 
         # Querying the database with requested username
         user = find_by_username(username)
         
         if user:
             # There is an existing username. We don't want to register users twice
-            # Return a message to the user telling them that the username already
+            # Return a msg to the user telling them that the username already
             # exist
-            response = {"message": "UserName already exists. Please choose a different one."}
-            return make_response(jsonify(response)), 402
+            response = {
+                "success": False,
+                "msg": "UserName already exists. Please choose a different one."
+            }
+            return make_response(jsonify(response)), 400
 
         # There is no user so we'll try to register them
 
         # If passwords don't match, return error
         if password != password2:
-            response = {"message": "Both passwords does not match"}
-            return make_response(jsonify(response)), 402
+            response = {
+                "success": False,
+                "msg": "Both passwords does not match"
+            }
+            return make_response(jsonify(response)), 400
         
         """Save the new User."""
         try:
@@ -73,11 +85,17 @@ class Register(MethodView):
             user = save(user)
         except Exception as err:
             print("Error occured: ", err)
-            response = {"message": "Something went wrong!!"}
+            response = {
+                "success": False,
+                "msg": "Something went wrong!!"
+            }
             return make_response(jsonify(response)), 500
 
-        response = {"message": "You registered successfully. Please log in.",
-                    "result": user}
+        response = {
+                    "success": True,
+                    "msg": "You registered successfully. Please log in.",
+                    "body": user
+                    }
 
         # return a response notifying the user that they registered
         # successfully
@@ -94,30 +112,41 @@ class Login(MethodView):
         try:
             email = data["email"]
             password = data["password"]
-        except Exception as err:
-            print("Error occured: ", err)
-            response = {"message": "Please provide all the required fields."}
-            return make_response(jsonify(response)), 404
+        except KeyError as err:
+            response = {
+                "success": False,
+                "msg": f'{str(err)} key is not present'
+            }
+            return make_response(jsonify(response)), 400
         
         # Get the user object using their email (unique to every user)
         # print(dir(User.User))
         user = find_by_email(email)
 
         if not user:
-            # User does not exist. Therefore, we return an error message
-            response = {"message": "Invalid email, Please try again"}
-            return make_response(jsonify(response)), 402
+            # User does not exist. Therefore, we return an error msg
+            response = {
+                "success": False,
+                "msg": "Invalid email, Please try again"
+            }
+            return make_response(jsonify(response)), 400
 
         # Try to authenticate the found user using their password
         if not user.verify_password(password):
-            response = {"message": "Wrong password, Please try again"}
+            response = {
+                "success": False,
+                "msg": "Wrong password, Please try again"
+            }
             return make_response(jsonify(response)), 402
 
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(user.id)
 
         if not access_token or not refresh_token:
-            response = {"message": "Something went wrong!"}
+            response = {
+                "success": False,
+                "msg": "Something went wrong!"
+            }
             # Return a server error using the HTTP Error Code 500 (Internal
             # Server Error)
             return make_response(jsonify(response)), 500
@@ -132,6 +161,84 @@ class Login(MethodView):
         }
         return make_response(jsonify(response)), 200
 
+class Auth(MethodView):
+    """
+    This class-based view handles user 
+    register and access token generation \
+    via 3rd sources like github, google
+    """
+
+    def post(self):
+        # Querying the database with requested email
+        data = request.get_json(silent=True,
+                                force=True)
+
+        try:
+            name = data["name"]
+            user_name = data["user_name"]
+            email = data["email"]
+        except KeyError as err:
+            response = {
+                "success": False,
+                "msg": f'{str(err)} key is not present'
+            }
+            return make_response(jsonify(response)), 400
+
+        user = find_by_email(email)
+
+        if not user:
+            # There is no user so we'll try to register them
+            user = User(email=email, 
+                        user_name= user_name, 
+                        name=name)
+
+            try:
+                user_new = save(user)
+            except Exception:
+                # An error occured, therefore return a string msg
+                # containing the error
+                response = {
+                    "success": False,
+                    "msg": "Something went wrong!"
+                }
+                return make_response(jsonify(response)), 500
+
+            access_token = create_access_token(identity=user_new['id'], fresh=True)
+            refresh_token = create_refresh_token(user_new['id'])
+
+            if not access_token:
+                response = {
+                    "success": False,
+                    "msg": "Something went wrong!"
+                }
+                # Return a server error using the HTTP Error Code 500 (Internal
+                # Server Error)
+                return make_response(jsonify(response)), 500
+
+            # Generate the access token. This will be used as the
+            # authorization header
+            response = {
+                "success": True,
+                "msg": "You logged in successfully.",
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "body": user_new
+            }
+            return make_response(jsonify(response)), 201
+
+        else:
+            # There is an existing user, Let him login.
+            access_token = create_access_token(identity=user.id, fresh=True)
+            refresh_token = create_refresh_token(user.id)
+
+            response = {
+                "success": True,
+                "msg": "You logged in successfully.",
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "body": to_json(user)
+            }
+            return make_response(jsonify(response)), 202
 
 class LogoutAccess(MethodView):
     """
@@ -143,10 +250,10 @@ class LogoutAccess(MethodView):
         try:
             revoked_token = RevokedToken(jti=jti)
             revoked_token.add()
-            response = {"message": "Access token has been revoked"}
+            response = {"msg": "Access token has been revoked"}
             return make_response(jsonify(response)), 200
         except Exception:
-            response = {"message": "Something went wrong!"}
+            response = {"msg": "Something went wrong!"}
             # Return a server error using the HTTP Error Code 500 (Internal
             # Server Error)
             return make_response(jsonify(response)), 500
@@ -162,10 +269,10 @@ class LogoutRefresh(MethodView):
         try:
             revoked_token = RevokedToken(jti=jti)
             revoked_token.add()
-            response = {"message": "Refresh token has been revoked"}
+            response = {"msg": "Refresh token has been revoked"}
             return make_response(jsonify(response)), 200
         except Exception:
-            response = {"message": "Something went wrong!"}
+            response = {"msg": "Something went wrong!"}
             # Return a server error using the HTTP Error Code 500 (Internal
             # Server Error)
             return make_response(jsonify(response)), 500
@@ -182,7 +289,7 @@ class TokenRefresh(MethodView):
                                            fresh=False)
 
         response = {
-            "message": "Token refreshed successfully",
+            "msg": "Token refreshed successfully",
             "access_token": access_token,
         }
         return make_response(jsonify(response)), 201
