@@ -12,10 +12,12 @@ from api.extensions import db
 from api.models.User import User
 from api.models.RevokedToken import RevokedToken
 from api.helpers.user import (
+    find_by_user_id,
     find_by_email, 
     find_by_username, 
     save, 
     to_json, 
+    get_data,
     get_user_roles
 )
 
