@@ -36,6 +36,7 @@ class Figure extends Component {
   }
 
   makeGuides() {
+    console.log('make guides')
     const guides = this.calculateGuides()
     const { color } = this.props.options
     return guides.map((pos, i) => (
@@ -54,6 +55,7 @@ class Figure extends Component {
   }
 
   render() {
+    console.log('render figure comp')
     const { figure, options, skipNextClick } = this.props
     const { id, points } = figure
     const {
@@ -256,12 +258,14 @@ export class PolygonFigure extends Figure {
 
 export class BBoxFigure extends Figure {
   calculateGuides() {
+    console.log('calculate guides bbox')
     const { figure, options } = this.props
     const { points } = figure
     const { newPoint, finished } = options
     const { draggedPoint } = this.state
 
     if (draggedPoint) {
+      console.log('dragged point')
       const renderPoints = this.getRenderPoints(points)
       const { point, index } = draggedPoint
       const oppPoint = renderPoints[(index + 2) % renderPoints.length]
@@ -276,6 +280,7 @@ export class BBoxFigure extends Figure {
     }
 
     if (!finished && points.length > 0) {
+      console.log('unfinished points bbox')
       const renderPoints = this.getRenderPoints([points[0], newPoint])
       return [
         [renderPoints[0], renderPoints[1]],
@@ -289,6 +294,7 @@ export class BBoxFigure extends Figure {
   }
 
   getRenderPoints(points) {
+    console.log('get render points bbox',points)
     const [p1, p2] = points
     if (!p1) {
       return []
@@ -306,6 +312,7 @@ export class BBoxFigure extends Figure {
   }
 
   onPointMoved(point, index) {
+    console.log('point moved bbox')
     const {
       figure,
       options: { onChange }
@@ -326,6 +333,7 @@ export class BBoxFigure extends Figure {
 }
 
 function midPoint(p1, p2) {
+  console.log('mid point')
   return {
     lat: (p1.lat + p2.lat) / 2,
     lng: (p1.lng + p2.lng) / 2

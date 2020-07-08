@@ -28,7 +28,9 @@ class LabelingApp extends Component {
     super(props)
     const { labels } = props
     const toggles = {}
-    labels.map(label => (toggles[label.id] = true))
+    labels.map(label => {
+      console.log('label map labeling app.js')
+      return (toggles[label.id] = true)})
 
     this.state = {
       selected: null,
@@ -44,6 +46,7 @@ class LabelingApp extends Component {
   }
 
   handleSelected = selected => {
+    console.log('handle selected')
     if (selected === this.state.selected) return
     const { pushState } = this.props
 
@@ -77,6 +80,7 @@ class LabelingApp extends Component {
   }
 
   handleSelectionChange = figureId => {
+    console.log('handle selection change')
     if (figureId) {
       this.setState({ selectedFigureId: figureId })
     } else {
@@ -88,6 +92,7 @@ class LabelingApp extends Component {
   }
 
   handleChange = (eventType, figure, newLabelId) => {
+    console.log('handle change labeling app.js')
     if (!figure.color) return
     // const { labels, figures, pushState, height, width, imageData } = this.props;
     const { labels, figures, pushState } = this.props
@@ -99,6 +104,7 @@ class LabelingApp extends Component {
 
     switch (eventType) {
       case 'new':
+        console.log('labeling app new')
         pushState(
           state => ({
             figures: update(state.figures, {
@@ -160,6 +166,7 @@ class LabelingApp extends Component {
       // break;
 
       case 'replace':
+        console.log('replace')
         pushState((state) => {
           return {
             figures: update(state.figures, {
@@ -182,6 +189,7 @@ class LabelingApp extends Component {
         break
 
       case 'delete':
+        console.log('delete')
         pushState(state => ({
           figures: update(state.figures, {
             [label.id]: {
@@ -192,6 +200,7 @@ class LabelingApp extends Component {
         break
 
       case 'unfinished':
+        console.log('unfinished')
         pushState(
           state => ({ unfinishedFigure: figure }),
           () => {
@@ -205,6 +214,7 @@ class LabelingApp extends Component {
         break
 
       case 'recolor':
+        console.log('recolor')
         if (label.id === newLabelId) return
         pushState(state => ({
           figures: update(state.figures, {
@@ -298,6 +308,7 @@ class LabelingApp extends Component {
     // let selectedFigure = null;
     const allFigures = []
     labels.forEach((label, i) => {
+      console.log('labels for each labeling app.js')
       figures[label.id].forEach(figure => {
         if (
           toggles[label.id] &&

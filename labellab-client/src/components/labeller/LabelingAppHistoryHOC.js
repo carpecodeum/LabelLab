@@ -9,7 +9,9 @@ export function withHistory(Comp) {
       const { labeldata, labels } = props
       let figures = {}
 
-      labels.map(label => (figures[label.id] = []))
+      labels.map(label => {
+        console.log('label map lablel app his hoc')
+        return (figures[label.id] = [])})
       figures.__temp = []
       Object.keys(labeldata).forEach(key => {
         figures[key] = (figures[key] || []).concat(labeldata[key])
@@ -24,6 +26,7 @@ export function withHistory(Comp) {
     }
 
     flipY = figures => {
+      console.log('flip y labeling app history hoc')
       // flip the y-coordinate
       const f = {}
       Object.keys(figures).forEach(label => {
@@ -31,6 +34,7 @@ export function withHistory(Comp) {
           if (figure.label_type !== 'polygon' && figure.label_type !== 'bbox') return figure
 
           let tracingOptions
+          console.log(tracingOptions)
           if (figure.tracingOptions && figure.tracingOptions.enabled) {
             tracingOptions = {
               ...figure.tracingOptions,
@@ -50,6 +54,7 @@ export function withHistory(Comp) {
     }
 
     transformPoints = points => {
+      console.log('transform points')
       const { height } = this.props
       return points.map(({ lat, lng, id, labeldata_id }) => ({
         lat: height - lat,
@@ -60,10 +65,12 @@ export function withHistory(Comp) {
     }
 
     componentDidUpdate(prevProps, prevState) {
+      console.log('component did update')
       const { onLabelChange, height, width } = this.props
       const { figures } = this.state
 
       if (figures !== prevState.figures) {
+        console.log('figures are not smae')
         onLabelChange({
           labels: this.flipY(figures),
           height,
@@ -73,6 +80,7 @@ export function withHistory(Comp) {
     }
 
     pushState = (stateChange, cb) => {
+      console.log('push state')
       this.setState(
         state => ({
           figuresHistory: update(state.figuresHistory, {
@@ -88,6 +96,7 @@ export function withHistory(Comp) {
     }
 
     popState = () => {
+      console.log('pop state')
       this.setState(state => {
         let { figuresHistory, unfinishedFigureHistory } = state
         if (!figuresHistory.length) {
@@ -113,6 +122,7 @@ export function withHistory(Comp) {
     }
 
     render() {
+      console.log('render labelling app history hoc')
       const { props, state, pushState, popState } = this
       const { figures, unfinishedFigure } = state
       const passedProps = {

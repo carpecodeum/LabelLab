@@ -45,6 +45,7 @@ export const fetchProjectImage = (imageId, callback) => {
     dispatch(request())
     FetchApi.get('/api/v1/image/get_image/' + imageId)
       .then(res => {
+        console.log(res.data)
         dispatch(success(res.data.body))
         callback()
       })
