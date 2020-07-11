@@ -206,7 +206,7 @@ export const OauthUser = (credentials, callback) => {
           //Save to localstorage
           saveAllTokens({ access_token, refresh_token, body })
           dispatch(success(res.data))
-          callback()
+          window.location.reload()
         }
       })
       .catch(err => {

@@ -35,6 +35,12 @@ usersprint.add_url_rule(
 )
 
 usersprint.add_url_rule(
+    "/auth/oauth",
+    view_func=userscontroller.userController["oauth"],
+    methods=["POST"]
+)
+
+usersprint.add_url_rule(
     "/users/info",
     view_func=userscontroller.userController["user"],
     methods=["GET"]

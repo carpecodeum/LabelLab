@@ -27,9 +27,7 @@ class Config:
 class DevelopmentConfig(Config):
     """Development Congigurations"""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DEV_DATABASE_URL"
-    )
+    SQLALCHEMY_DATABASE_URI =  "mysql+pymysql://" + "root" + ":" + "password" + "@" + "localhost" + "/labellab"   
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # needs to be removed in further versions
     ML_FILES_DIR = os.path.join(os.path.dirname(basedir),'model_files')

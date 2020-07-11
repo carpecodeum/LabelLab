@@ -177,7 +177,7 @@ class Auth(MethodView):
 
         try:
             name = data["name"]
-            user_name = data["user_name"]
+            username = data["username"]
             email = data["email"]
         except KeyError as err:
             response = {
@@ -191,7 +191,7 @@ class Auth(MethodView):
         if not user:
             # There is no user so we'll try to register them
             user = User(email=email, 
-                        user_name= user_name, 
+                        username= username, 
                         name=name)
 
             try:
@@ -320,30 +320,6 @@ class UserInfo(MethodView):
         }
         return make_response(jsonify(response)), 200
 
-class UserInfo(MethodView):
-    """This class-based view handles retrieving the current \
-    user's information"""
-
-    @jwt_required
-    def get(self):
-        current_user = get_jwt_identity()
-
-        user = find_by_user_id(current_user)
-
-        if user is None:
-            response = {
-                "success": False,
-                "msg": "User not found."
-            }
-            return make_response(jsonify(response)), 404
-
-        response = {
-            "success": True,
-            "msg": "User found.",
-            "body": user
-        }
-        return make_response(jsonify(response)), 200
-
 class CountInfo(MethodView):
     """This class-based view handles the count of images and labels."""
 
@@ -386,6 +362,7 @@ userController = {
     "logout_access": LogoutAccess.as_view("logout_access"),
     "logout_refresh": LogoutRefresh.as_view("logout_refresh"),
     "token_refresh": TokenRefresh.as_view("token_refresh"),
+    "oauth": Auth.as_view("oauth"),
     "user": UserInfo.as_view("user"),
     "count_info": CountInfo.as_view("count_info")
 }
