@@ -109,6 +109,15 @@ class ProjectSidebar extends Component {
                 >
                   Project Models
                 </Menu.Item>
+                <Menu.Item
+                  as={Link}
+                  to={`/project/${project.projectId}/path-tracking`}
+                  name="path-tracking"
+                  active={activeItem === 'pat-tracking'}
+                  onClick={this.handleItemClick}
+                >
+                  Image Path Tracking
+                </Menu.Item>
               </Menu>
             </div>
 
