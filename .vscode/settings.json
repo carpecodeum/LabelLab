@@ -1,5 +1,6 @@
 {
     "prettier.jsxSingleQuote": true,
     "prettier.semi": false,
-    "prettier.singleQuote": true
+    "prettier.singleQuote": true,
+    "python.pythonPath": "C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python36\\python.exe"
 }

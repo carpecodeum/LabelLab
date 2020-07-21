@@ -34,7 +34,7 @@ def update_project(project_id, data):
     project.project_description = data['projectdescription']
     db.session.commit()
     return project_schema.dump(project).data
-    
+        
 def delete_by_id(_id):
     """
     Delete project by their id

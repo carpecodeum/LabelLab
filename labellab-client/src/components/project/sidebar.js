@@ -113,10 +113,19 @@ class ProjectSidebar extends Component {
                   as={Link}
                   to={`/project/${project.projectId}/path-tracking`}
                   name="path-tracking"
-                  active={activeItem === 'pat-tracking'}
+                  active={activeItem === 'path-tracking'}
                   onClick={this.handleItemClick}
                 >
                   Image Path Tracking
+                </Menu.Item>
+                <Menu.Item
+                  as={Link}
+                  to={`/project/${project.projectId}/my-teams`}
+                  name="my-teams"
+                  active={activeItem === 'my-teams'}
+                  onClick={this.handleItemClick}
+                >
+                  My Teams
                 </Menu.Item>
               </Menu>
             </div>

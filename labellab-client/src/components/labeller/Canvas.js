@@ -36,10 +36,8 @@ class Canvas extends Component {
   componentDidUpdate(prevProps) {
     const { onSelectionChange } = this.props
     const { selectedFigureId } = this.state
-console.log('componentdidupdate')
     if (this.prevSelectedFigureId !== selectedFigureId && onSelectionChange) {
       this.prevSelectedFigureId = selectedFigureId
-      console.log('on selection change')
       onSelectionChange(selectedFigureId)
     }
   }
@@ -47,18 +45,15 @@ console.log('componentdidupdate')
   getSelectedFigure() {
     const { selectedFigureId } = this.state
     const { figures } = this.props
-    console.log('get selected figure')
     return figures.find(f => f.id === selectedFigureId)
   }
 
   handleChange(eventType, { point, pos, figure, points }) {
-    console.log('handle change')
     const { onChange, unfinishedFigure } = this.props
     const drawing = !!unfinishedFigure
     let f = null
     switch (eventType) {
       case 'add':
-        console.log('add')
         if (drawing) {
           let newState = unfinishedFigure.points
           newState = update(newState, { $push: [point] })
@@ -80,13 +75,11 @@ console.log('componentdidupdate')
         break
 
       case 'end':
-        console.log('end')
         f = unfinishedFigure
         onChange('new', f)
         break
 
       case 'move':
-        console.log('move')
         onChange(
           'replace',
           update(figure, { points: { $splice: [[pos, 1, point]] } })
@@ -94,12 +87,10 @@ console.log('componentdidupdate')
         break
 
       case 'replace':
-        console.log('replace')
         onChange('replace', update(figure, { points: { $set: points } }))
         break
 
       case 'remove':
-        console.log('remove')
         onChange('replace', update(figure, { points: { $splice: [[pos, 1]] } }))
         break
 
@@ -113,20 +104,17 @@ console.log('componentdidupdate')
     const drawing = !!unfinishedFigure
 
     if (this.skipNextClickEvent) {
-      console.log('skip next click event')
       // a hack, for whatever reason it is really hard to stop event propagation in leaflet
       this.skipNextClickEvent = false
       return
     }
 
     if (drawing) {
-      console.log('handle change draewing')
       this.handleChange('add', { point: convertPoint(e.latlng) })
       return
     }
 
     if (!drawing) {
-      console.log('not drawing')
       this.setState({ selectedFigureId: null })
       return
     }
@@ -162,7 +150,6 @@ console.log('componentdidupdate')
     const drawing = !!unfinishedFigure
 
     const calcDistance = (p1, p2) => {
-      console.log('calc distance')
       const map = this.mapRef.current.leafletElement
       return map.latLngToLayerPoint(p1).distanceTo(map.latLngToLayerPoint(p2))
     }
@@ -184,7 +171,6 @@ console.log('componentdidupdate')
         ? lighten(colorMapping[f.color], 80)
         : colorMapping[f.color]
     const figuresDOM = figures.map((f, i) =>{
-    console.log('figuresDOM', f)
       return this.renderFigure(f, {
         editing: selectedFigureId === f.id && !drawing,
         finished: true,

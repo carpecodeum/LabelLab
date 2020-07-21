@@ -29,7 +29,6 @@ class LabelingLoader extends Component {
     fetchProjectImage(match.params.imageId, this.setImage)
   }
   componentDidUpdate(prevProps) {
-    console.log('index.js comp did update')
     const { match, fetchLabels, fetchProject, fetchProjectImage } = this.props
     if (prevProps.match.params.imageId !== match.params.imageId) {
       fetchLabels(match.params.projectId)
@@ -38,14 +37,12 @@ class LabelingLoader extends Component {
     }
   }
   setImage = () => {
-    console.log('set image')
     const { image } = this.props
     this.setState({
       img: image
     })
   }
   setImageState = () => {
-    console.log('set image state')
     const { match, setNextPrev, allImages } = this.props
     const len = allImages && allImages.length
     allImages &&

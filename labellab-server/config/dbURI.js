@@ -11,11 +11,11 @@ let mongoURI
 
 if (dbName && dbUser && dbPass) {
   mongoURI =
-    '' + dbHost + '://' + dbUser + ':' + dbPass + '@' + dbCluster + '/' + dbName
+    'mongodb+srv://adi:adi9891255973@adi-ocz5j.mongodb.net/test?retryWrites=true&w=majority'
 } else if (process.env.MONGODB_URI) {
-  mongoURI = process.env.MONGODB_URI
+  mongoURI = 'mongodb+srv://adi:adi9891255973@adi-ocz5j.mongodb.net/test?retryWrites=true&w=majority'
 } else {
-  mongoURI = ''
+  mongoURI = 'mongodb+srv://adi:adi9891255973@adi-ocz5j.mongodb.net/test?retryWrites=true&w=majority'
 }
 
 module.exports = {

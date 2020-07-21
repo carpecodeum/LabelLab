@@ -76,22 +76,22 @@ class LoginIndex extends Component {
     const { email, password } = this.state
     e.preventDefault()
 
-    if (validateForm(this.state)) {
+    // if (validateForm(this.state)) {
       this.props.login(email, password, this.callback)
-    } else {
-      let errors = { ...this.state.errors }
+    // } else {
+    //   let errors = { ...this.state.errors }
 
-      errors.password = password.length ? '' : 'Password is required!'
-      errors.email = email.length
-        ? isEmail(email)
-          ? ''
-          : 'E-mail address is invalid!'
-        : 'E-mail address is required!'
+    //   errors.password = password.length ? '' : 'Password is required!'
+    //   errors.email = email.length
+    //     ? isEmail(email)
+    //       ? ''
+    //       : 'E-mail address is invalid!'
+    //     : 'E-mail address is required!'
 
-      this.setState({
-        errors
-      })
-    }
+    //   this.setState({
+    //     errors
+    //   })
+    // }
   }
 
   callback = () => {

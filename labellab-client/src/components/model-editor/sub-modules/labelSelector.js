@@ -92,7 +92,7 @@ class AddLabelModal extends Component {
     this.dropdownOptions = []
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     const { labels } = this.props
 
     const validOptions = labels.filter(label => label.count > 0)
