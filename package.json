@@ -5,5 +5,11 @@
   "scripts": {
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd labellab-server && npm install && cd ../labellab-client && npm install && npm run build",
     "start": "cd labellab-server && npm start"
+  },
+  "dependencies": {
+    "check-prop-types": "^1.1.2",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "react-dom": "^16.13.1"
   }
 }
